@@ -4,8 +4,54 @@ import munit.FunSuite
 
 class ScalaEntityParserSuite extends FunSuite {
 
-  test("one") {
-    val a  = "ABC".split("\\.")
-    println(a.toList)
+  test("simpleEntity") {
+    val table = SuiteHelper.getModel().allTables().head
+    val schema = ScalaEntityParser.fromTable(table, "com.timzaak.test").schema
+    val expected = s"""package com.timzaak.test
+                      |
+                      |case class Users(
+                      |id: Option[Int],
+                      |username: String,
+                      |info: Option[String],)
+                      |""".stripMargin
+      assert(schema == expected)
+  }
+
+  test("mixture Test") {
+    val table = SuiteHelper.getModel().allTables().head
+    val schema = ScalaEntityParser.fromTable(
+      table,
+      "com.timzaak.test",
+      nameF = _ => "User",
+      `extends` = List("very.util.Dao"),
+      imports = List("scalikejdbc.*"),
+      fieldTypePF = {
+        case "info" => "com.timzaak.entity.TestCase"
+        case "username" => "NameString"
+      }
+
+    ).schema
+
+    val expected =
+      s"""package com.timzaak.test
+         |
+         |import scalikejdbc.*
+         |import very.util.Dao
+         |import com.timzaak.entity.TestCase
+         |
+         |case class User(
+         |id: Option[Int],
+         |username: NameString,
+         |info: Option[TestCase],) extends Dao
+         |""".stripMargin
+    assert(schema == expected)
+  }
+
+
+  //timestamp for SQLite is string type 
+  test("entity with timestamp".ignore) {
+    val table = SuiteHelper.getModel(sql=  SuiteHelper.simpleSQLWithTime).allTables().head
+    val schema = ScalaEntityParser.fromTable(table, "com.timzaak.test").schema
+    println(schema)
   }
 }
