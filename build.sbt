@@ -5,12 +5,11 @@ lazy val root = project
   .settings(
     name := "table2case",
     version := "0.1.0-SNAPSHOT",
-
     scalaVersion := scala3Version,
-
     libraryDependencies ++= Seq(
-      "nl.big-o"% "liqp" % "0.9.1.0",
+      // "nl.big-o" % "liqp" % "0.9.1.0",
       "org.xerial" % "sqlite-jdbc" % "3.46.1.0" % Test,
+      "org.postgresql" % "postgresql" % "42.7.4" % Test,
       "org.scalameta" %% "munit" % "1.0.0" % Test,
     )
   )

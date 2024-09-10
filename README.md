@@ -9,8 +9,8 @@ The startup code is from ScalikJDBC, this project made some change to support ot
 
 - [x] transfer to ScalaCaseClass
 - [ ] support timestamp
-- [ ] support ScalaSQL
-- [ ] add tests for POstgres and MySQL, add GitHub Actions.
+- [x] support ScalaSQL
+- [ ] add tests for PostgreSQL and MySQL, add GitHub Actions.
 
 ## Known Issue
-- SQLite `timestamp` jdbc type would  be `VARCHAR`.
+- SQLite `timestamp` jdbc type would be `VARCHAR`.
