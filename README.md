@@ -14,3 +14,4 @@ The startup code is from ScalikJDBC, this project made some change to support ot
 
 ## Known Issue
 - SQLite `timestamp` jdbc type would be `VARCHAR`.
+- SQLite `primary key` would be nullable.

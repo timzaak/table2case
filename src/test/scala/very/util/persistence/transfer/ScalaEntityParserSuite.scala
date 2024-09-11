@@ -4,7 +4,7 @@ import munit.FunSuite
 
 class ScalaEntityParserSuite extends FunSuite {
 
-  test("simpleEntity") {
+  test("SQLite simpleEntity") {
     val table = SuiteHelper.getModel().allTables().head
     val schema = ScalaEntityParser.fromTable(table, "com.timzaak.test").schema
     val expected = s"""package com.timzaak.test
@@ -15,6 +15,19 @@ class ScalaEntityParserSuite extends FunSuite {
                       |info: Option[String],)
                       |""".stripMargin
       assert(schema == expected)
+  }
+  test("PostgreSQL simpleEntity") {
+    val table = SuiteHelper.getPGModel().allTables().head
+    val schema = ScalaEntityParser.fromTable(table, "com.timzaak.test").schema
+    println(schema)
+      
+    assertEquals(schema, s"""package com.timzaak.test
+                            |
+                            |case class Users(
+                            |id: Int,
+                            |username: String,
+                            |info: Option[String],)
+                            |""".stripMargin)
   }
 
   test("mixture Test") {
