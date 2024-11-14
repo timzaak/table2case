@@ -19,7 +19,6 @@ class ScalaEntityParserSuite extends FunSuite {
   test("PostgreSQL simpleEntity") {
     val table = SuiteHelper.getPGModel().allTables().head
     val schema = ScalaEntityParser.fromTable(table, "com.timzaak.test").schema
-    println(schema)
       
     assertEquals(schema, s"""package com.timzaak.test
                             |

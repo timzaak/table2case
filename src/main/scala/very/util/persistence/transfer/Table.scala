@@ -6,3 +6,9 @@ case class Table(
                   autoIncrementColumns: List[Column],
                   primaryKeyColumns: List[Column],
                   schema: Option[String] = None)
+
+case class Table2(
+  name:String,
+  allColumns: List[Column2],
+  primaryKeyColumns:List[String],
+  schema:Option[String] =None)

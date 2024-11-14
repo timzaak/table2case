@@ -23,6 +23,10 @@ case class WrappedResultSet(
     ensureCursor()
     underlying.getString(columnLabel)
   }
+  def boolean(columnLabel:String):Boolean = {
+    ensureCursor()
+    underlying.getBoolean(columnLabel)
+  }
 
   def concurrency: Int = {
     ensureCursor()

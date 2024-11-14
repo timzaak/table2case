@@ -1,9 +1,6 @@
 package very.util.persistence.transfer
 
-import java.io.FileWriter
-import java.nio.file.Paths
 import java.sql.JDBCType as JavaSqlTypes
-import scala.util.Using
 import java.util.Locale
 
 case class ScalaEntityParser(
@@ -18,7 +15,10 @@ case class ScalaEntityParser(
     val extendsStr =
       if (`extends`.nonEmpty) s" extends ${`extends`.mkString(" with ")}"
       else ""
-    val importStr = if(imports.nonEmpty) s"\n${imports.map(v => s"import $v").mkString("","\n",  "\n")}" else ""
+    val importStr =
+      if (imports.nonEmpty)
+        s"\n${imports.map(v => s"import $v").mkString("", "\n", "\n")}"
+      else ""
     s"""package ${`package`}
       |$importStr
       |case class $name(
@@ -30,6 +30,27 @@ case class ScalaEntityParser(
 }
 
 object ScalaEntityParser {
+  object TypeName {
+    val Any = "Any"
+    val AnyArray = "List[Any]"
+    val ByteArray = "List[Byte]"
+    val Long = "Long"
+    val Boolean = "Boolean"
+    val DateTime = "DateTime"
+    val LocalDate = "LocalDate"
+    val LocalTime = "LocalTime"
+    val String = "String"
+    val Byte = "Byte"
+    val Int = "Int"
+    val Short = "Short"
+    val Float = "Float"
+    val Double = "Double"
+    val Blob = "Blob"
+    val Clob = "Clob"
+    val Ref = "Ref"
+    val Struct = "Struct"
+    val BigDecimal = "BigDecimal" // scala.math.BigDecimal
+  }
   case class ColumnInScala(underlying: Column) {
 
     lazy val typeInScala: String = {
@@ -37,27 +58,6 @@ object ScalaEntityParser {
       else "Option[" + rawTypeInScala + "]"
     }
 
-    object TypeName {
-      val Any = "Any"
-      val AnyArray = "List[Any]"
-      val ByteArray = "List[Byte]"
-      val Long = "Long"
-      val Boolean = "Boolean"
-      val DateTime = "DateTime"
-      val LocalDate = "LocalDate"
-      val LocalTime = "LocalTime"
-      val String = "String"
-      val Byte = "Byte"
-      val Int = "Int"
-      val Short = "Short"
-      val Float = "Float"
-      val Double = "Double"
-      val Blob = "Blob"
-      val Clob = "Clob"
-      val Ref = "Ref"
-      val Struct = "Struct"
-      val BigDecimal = "BigDecimal" // scala.math.BigDecimal
-    }
     lazy val rawTypeInScala: String = underlying.dataType match {
       case JavaSqlTypes.ARRAY         => TypeName.AnyArray
       case JavaSqlTypes.BIGINT        => TypeName.Long
@@ -96,61 +96,79 @@ object ScalaEntityParser {
       case _                         => TypeName.Any
     }
 
-    lazy val dummyValue: String = underlying.dataType match {
-      case JavaSqlTypes.ARRAY         => "null"
-      case JavaSqlTypes.BIGINT        => "1"
-      case JavaSqlTypes.BINARY        => "1"
-      case JavaSqlTypes.BIT           => "false"
-      case JavaSqlTypes.BLOB          => "null"
-      case JavaSqlTypes.BOOLEAN       => "true"
-      case JavaSqlTypes.CHAR          => "'abc'"
-      case JavaSqlTypes.CLOB          => "null"
-      case JavaSqlTypes.DATALINK      => "null"
-      case JavaSqlTypes.DATE          => "'1958-09-06'"
-      case JavaSqlTypes.DECIMAL       => "1"
-      case JavaSqlTypes.DISTINCT      => "null"
-      case JavaSqlTypes.DOUBLE        => "0.1"
-      case JavaSqlTypes.FLOAT         => "0.1"
-      case JavaSqlTypes.INTEGER       => "1"
-      case JavaSqlTypes.JAVA_OBJECT   => "null"
-      case JavaSqlTypes.LONGVARBINARY => "null"
-      case JavaSqlTypes.LONGVARCHAR   => "'abc'"
-      case JavaSqlTypes.NULL          => "null"
-      case JavaSqlTypes.NUMERIC       => "1"
-      case JavaSqlTypes.OTHER         => "null"
-      case JavaSqlTypes.REAL          => "null"
-      case JavaSqlTypes.REF           => "null"
-      case JavaSqlTypes.SMALLINT      => "1"
-      case JavaSqlTypes.STRUCT        => "null"
-      case JavaSqlTypes.TIME          => "'12:00:00'"
-      case JavaSqlTypes.TIMESTAMP     => "'1958-09-06 12:00:00'"
-      case JavaSqlTypes.TINYINT       => "1"
-      case JavaSqlTypes.VARBINARY     => "null"
-      case JavaSqlTypes.VARCHAR       => "'abc'"
-      case JavaSqlTypes.NVARCHAR      => "'abc'"
-      case JavaSqlTypes.NCHAR         => "'abc'"
-      case JavaSqlTypes.LONGNVARCHAR  => "'abc'"
-      case _                          => "null"
-    }
-
-    lazy val defaultValueInScala: String = typeInScala match {
-      case TypeName.AnyArray   => "Array[Any]()"
-      case TypeName.Long       => "1L"
-      case TypeName.ByteArray  => "Array[Byte]()"
-      case TypeName.Boolean    => "false"
-      case TypeName.String     => "\"MyString\""
-      case TypeName.LocalDate  => "LocalDate.now"
-      case TypeName.BigDecimal => "new java.math.BigDecimal(\"1\")"
-      case TypeName.Double     => "0.1D"
-      case TypeName.Float      => "0.1F"
-      case TypeName.Int        => "123"
-      case TypeName.Short      => "123"
-      case TypeName.DateTime   => "DateTime.now"
-      case TypeName.Byte       => "1"
-      case _                   => "null"
-    }
-
     // private[CodeGenerator] def isAny: Boolean = rawTypeInScala == TypeName.Any
+  }
+
+  case class ColumnInScala2(underling: Column2) {
+    lazy val typeInScala: String = {
+      if (underlying.isNotNull) rawTypeInScala
+      else "Option[" + rawTypeInScala + "]"
+    }
+
+    private def partialType(dataType: String): String = dataType match {
+      case "text"                         => TypeName.String
+      case v if v.startsWith("character") => TypeName.String
+      case "integer"                      => TypeName.Int
+      case "smallint"                     => TypeName.Short
+      case "bigint"                       => TypeName.Long
+      case "date"                         => TypeName.LocalDate
+      case "bytea"                        => TypeName.ByteArray
+      case "timestamp with time zone"     => TypeName.Any
+      case "timestamp"                    => TypeName.Any
+      case "boolean"                      => TypeName.Boolean
+      case "jsonb" | "json"               => TypeName.Any
+      case v if v.startsWith("numeric")   => TypeName.BigDecimal
+      case v if v.endsWith("[]") =>
+        s"List[${partialType(dataType.replaceFirst("\\[\\]", ""))}]"
+    }
+
+    lazy val rawTypeInScala: String = partialType(underling.dataType)
+    
+  }
+
+  def fromTable2(
+    table: Table2,
+    `package`: String,
+    `extends`: List[String] = List.empty,
+    imports: List[String] = List.empty,
+    nameF: String => String = toCamelCase.andThen(quoteReservedWord),
+    columnNamePF: PartialFunction[String, String] = PartialFunction.empty,
+    fieldTypePF: PartialFunction[String, String] = PartialFunction.empty,
+  ): Unit = {
+    val extendsFix = `extends`.map(extractImportsType)
+    var _imports = imports ++ extendsFix.collect { case (Some(v), _) =>
+      v
+    }
+
+    val fields = table.allColumns.map { column =>
+      val columNameTransfer = lowerCamelCase.andThen(quoteReservedWord)
+      val newName =
+        if (columnNamePF.isDefinedAt(column.name)) columnNamePF(column.name)
+        else columNameTransfer(column.name)
+      val fixedColumn = ColumnInScala2(column.copy(name = newName))
+      val fieldType = if (fieldTypePF.isDefinedAt(newName)) {
+        val importType = fieldTypePF(newName)
+        val (hasImport, typeName) = extractImportsType(importType)
+        hasImport.foreach(v => _imports = _imports :+ v)
+        if (!column.isNotNull) {
+          s"Option[${typeName}]"
+        } else {
+          typeName
+        }
+      } else {
+        fixedColumn.typeInScala
+      }
+      fixedColumn.underlying.name -> fieldType
+    }
+    _imports = _imports.distinct
+
+    ScalaEntityParser(
+      `package` = `package`,
+      imports = _imports,
+      name = nameF(table.name),
+      `extends` = extendsFix.map(_._2),
+      fields = fields
+    )
   }
 
   def fromTable(

@@ -39,9 +39,24 @@ object SuiteHelper {
   def getPGModel(sql: String = simplePGSQL): Model = {
     val model = Model("jdbc:postgresql://127.0.0.1/test", "postgres", "postgres")
     val stmt = model._connection.createStatement()
+    
     stmt.execute(sql)
     stmt.close()
     model
   }
 
+  def fullPGTypeSQL:String =
+    s"""create table if not exists ta(
+        |id serial primary key,
+        |t_tiny_int int2,
+        |t_long bigint,
+        |t_bson jsonb,
+        |t_date DATE ,
+        |t_timestamp_tz timestamptz default now(),
+        |t_text text,
+        |t_money numeric(10,2),
+        |t_array_int integer[],
+        |t_array_text text[]
+        |)
+        |""".stripMargin
 }
