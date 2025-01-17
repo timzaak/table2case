@@ -6,12 +6,12 @@ class ScalasqlEntityParserSuite extends FunSuite {
 
   test("simple Scalasql Parse") {
     val table = SuiteHelper.getModel().allTables().head
-    val schema = ScalasqlEntityParser.fromTable(Dialog.Sqlite, table, "com.timzaak.test").schema
+    val schema = ScalasqlEntityParser.fromTable(Dialect.Sqlite, table, "com.timzaak.test").schema
     val expected =
       s"""package com.timzaak.test
          |
          |import scalasql.*
-         |import scalasql.SqliteDialog.*
+         |import scalasql.SqliteDialect.*
          |
          |case class Users[T[_]](
          |id: T[Option[Int]],

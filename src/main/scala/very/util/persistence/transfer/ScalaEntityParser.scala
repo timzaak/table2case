@@ -18,7 +18,10 @@ case class ScalaEntityParser(
     val extendsStr =
       if (`extends`.nonEmpty) s" extends ${`extends`.mkString(" with ")}"
       else ""
-    val importStr = if(imports.nonEmpty) s"\n${imports.map(v => s"import $v").mkString("","\n",  "\n")}" else ""
+    val importStr =
+      if (imports.nonEmpty)
+        s"\n${imports.map(v => s"import $v").mkString("", "\n", "\n")}"
+      else ""
     s"""package ${`package`}
       |$importStr
       |case class $name(
@@ -30,6 +33,29 @@ case class ScalaEntityParser(
 }
 
 object ScalaEntityParser {
+  object TypeName {
+    val Any = "Any"
+    val AnyArray = "List[Any]"
+    val ByteArray = "List[Byte]"
+    val Long = "Long"
+    val Boolean = "Boolean"
+    val DateTime = "DateTime"
+    val LocalDate = "LocalDate"
+    val LocalTime = "LocalTime"
+    val OffsetDateTime = "OffsetDateTime"
+    val String = "String"
+    val Byte = "Byte"
+    val Int = "Int"
+    val Short = "Short"
+    val Float = "Float"
+    val Double = "Double"
+    val Blob = "Blob"
+    val Clob = "Clob"
+    val Ref = "Ref"
+    val Struct = "Struct"
+    val BigDecimal = "BigDecimal" // scala.math.BigDecimal
+  }
+
   case class ColumnInScala(underlying: Column) {
 
     lazy val typeInScala: String = {
@@ -37,63 +63,42 @@ object ScalaEntityParser {
       else "Option[" + rawTypeInScala + "]"
     }
 
-    object TypeName {
-      val Any = "Any"
-      val AnyArray = "List[Any]"
-      val ByteArray = "List[Byte]"
-      val Long = "Long"
-      val Boolean = "Boolean"
-      val DateTime = "DateTime"
-      val LocalDate = "LocalDate"
-      val LocalTime = "LocalTime"
-      val String = "String"
-      val Byte = "Byte"
-      val Int = "Int"
-      val Short = "Short"
-      val Float = "Float"
-      val Double = "Double"
-      val Blob = "Blob"
-      val Clob = "Clob"
-      val Ref = "Ref"
-      val Struct = "Struct"
-      val BigDecimal = "BigDecimal" // scala.math.BigDecimal
-    }
     lazy val rawTypeInScala: String = underlying.dataType match {
-      case JavaSqlTypes.ARRAY         => TypeName.AnyArray
-      case JavaSqlTypes.BIGINT        => TypeName.Long
-      case JavaSqlTypes.BINARY        => TypeName.ByteArray
-      case JavaSqlTypes.BIT           => TypeName.Boolean
-      case JavaSqlTypes.BLOB          => TypeName.Blob
-      case JavaSqlTypes.BOOLEAN       => TypeName.Boolean
-      case JavaSqlTypes.CHAR          => TypeName.String
-      case JavaSqlTypes.CLOB          => TypeName.Clob
-      case JavaSqlTypes.DATALINK      => TypeName.Any
-      case JavaSqlTypes.DATE          => TypeName.LocalDate
-      case JavaSqlTypes.DECIMAL       => TypeName.BigDecimal
-      case JavaSqlTypes.DISTINCT      => TypeName.Any
-      case JavaSqlTypes.DOUBLE        => TypeName.Double
-      case JavaSqlTypes.FLOAT         => TypeName.Float
-      case JavaSqlTypes.INTEGER       => TypeName.Int
-      case JavaSqlTypes.JAVA_OBJECT   => TypeName.Any
-      case JavaSqlTypes.LONGVARBINARY => TypeName.ByteArray
-      case JavaSqlTypes.LONGVARCHAR   => TypeName.String
-      case JavaSqlTypes.NULL          => TypeName.Any
-      case JavaSqlTypes.NUMERIC       => TypeName.BigDecimal
-      case JavaSqlTypes.OTHER         => TypeName.Any
-      case JavaSqlTypes.REAL          => TypeName.Float
-      case JavaSqlTypes.REF           => TypeName.Ref
-      case JavaSqlTypes.SMALLINT      => TypeName.Short
-      case JavaSqlTypes.STRUCT        => TypeName.Struct
-      case JavaSqlTypes.TIME          => TypeName.LocalTime
-      case JavaSqlTypes.TIMESTAMP =>
-        TypeName.Any // config.dateTimeClass.simpleName
-      case JavaSqlTypes.TINYINT      => TypeName.Byte
-      case JavaSqlTypes.VARBINARY    => TypeName.ByteArray
-      case JavaSqlTypes.VARCHAR      => TypeName.String
-      case JavaSqlTypes.NVARCHAR     => TypeName.String
-      case JavaSqlTypes.NCHAR        => TypeName.String
-      case JavaSqlTypes.LONGNVARCHAR => TypeName.String
-      case _                         => TypeName.Any
+      case JavaSqlTypes.ARRAY                   => TypeName.AnyArray
+      case JavaSqlTypes.BIGINT                  => TypeName.Long
+      case JavaSqlTypes.BINARY                  => TypeName.ByteArray
+      case JavaSqlTypes.BIT                     => TypeName.Boolean
+      case JavaSqlTypes.BLOB                    => TypeName.Blob
+      case JavaSqlTypes.BOOLEAN                 => TypeName.Boolean
+      case JavaSqlTypes.CHAR                    => TypeName.String
+      case JavaSqlTypes.CLOB                    => TypeName.Clob
+      case JavaSqlTypes.DATALINK                => TypeName.Any
+      case JavaSqlTypes.DATE                    => TypeName.LocalDate
+      case JavaSqlTypes.DECIMAL                 => TypeName.BigDecimal
+      case JavaSqlTypes.DISTINCT                => TypeName.Any
+      case JavaSqlTypes.DOUBLE                  => TypeName.Double
+      case JavaSqlTypes.FLOAT                   => TypeName.Float
+      case JavaSqlTypes.INTEGER                 => TypeName.Int
+      case JavaSqlTypes.JAVA_OBJECT             => TypeName.Any
+      case JavaSqlTypes.LONGVARBINARY           => TypeName.ByteArray
+      case JavaSqlTypes.LONGVARCHAR             => TypeName.String
+      case JavaSqlTypes.NULL                    => TypeName.Any
+      case JavaSqlTypes.NUMERIC                 => TypeName.BigDecimal
+      case JavaSqlTypes.OTHER                   => TypeName.Any
+      case JavaSqlTypes.REAL                    => TypeName.Float
+      case JavaSqlTypes.REF                     => TypeName.Ref
+      case JavaSqlTypes.SMALLINT                => TypeName.Short
+      case JavaSqlTypes.STRUCT                  => TypeName.Struct
+      case JavaSqlTypes.TIME                    => TypeName.LocalTime
+      case JavaSqlTypes.TIMESTAMP               => TypeName.LocalTime
+      case JavaSqlTypes.TIMESTAMP_WITH_TIMEZONE => TypeName.OffsetDateTime
+      case JavaSqlTypes.TINYINT                 => TypeName.Byte
+      case JavaSqlTypes.VARBINARY               => TypeName.ByteArray
+      case JavaSqlTypes.VARCHAR                 => TypeName.String
+      case JavaSqlTypes.NVARCHAR                => TypeName.String
+      case JavaSqlTypes.NCHAR                   => TypeName.String
+      case JavaSqlTypes.LONGNVARCHAR            => TypeName.String
+      case _                                    => TypeName.Any
     }
 
     lazy val dummyValue: String = underlying.dataType match {
@@ -182,6 +187,12 @@ object ScalaEntityParser {
           typeName
         }
       } else {
+        if (
+          Set(TypeName.OffsetDateTime, TypeName.DateTime, TypeName.LocalTime)
+            .contains(fixedColumn.rawTypeInScala)
+        ) {
+          _imports = _imports :+ s"java.time.${fixedColumn.rawTypeInScala}"
+        }
         fixedColumn.typeInScala
       }
       fixedColumn.underlying.name -> fieldType

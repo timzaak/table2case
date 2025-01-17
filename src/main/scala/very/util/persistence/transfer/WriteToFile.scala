@@ -5,10 +5,14 @@ import java.nio.file.Paths
 import scala.util.Using
 
 trait WriteToFile {
-  def `package`:String
+  def `package`: String
   def schema: String
-  def writeToFile(srcPath: String, isForce: Boolean = true): Unit = {
-    val path = Paths.get(srcPath, `package`.split("\\.") *).toFile
+  def name: String
+  def writeToFile(srcPath: String, isForce: Boolean = false): Unit = {
+    val path = Paths
+      .get(srcPath, `package`.split("\\.").toList.appended(s"${name}.scala")*)
+      .toFile
+
     if (path.exists() && !isForce) {
       // Write Log
     } else {

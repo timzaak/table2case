@@ -62,7 +62,7 @@ class ScalaEntityParserSuite extends FunSuite {
 
 
   //timestamp for SQLite is string type 
-  test("entity with timestamp".ignore) {
+  test("entity with timestamp") {
     val table = SuiteHelper.getModel(sql=  SuiteHelper.simpleSQLWithTime).allTables().head
     val schema = ScalaEntityParser.fromTable(table, "com.timzaak.test").schema
     println(schema)

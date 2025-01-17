@@ -1,6 +1,6 @@
 package very.util.persistence.transfer
 
-enum Dialog {
+enum Dialect {
   case Sqlite
   case Postgres
   case MySql

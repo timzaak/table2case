@@ -8,18 +8,21 @@ The startup code is from ScalikJDBC, this project made some changes to support o
 
 
 - [x] transfer to ScalaCaseClass
-- [ ] support timestamp
+- [x] support java.time.*
 - [x] support ScalaSQL
 - [ ] add tests for Postgres and MySQL, add GitHub Actions.
 
 
 ##  Startup example
+
 ```scala
-imort very.util.persistence.transfer.*
+import very.util.persistence.transfer.*
 
 val model = Model("jdbc:postgresql://127.0.0.1/test", "postgres", "postgres")
-model.listAllTables().foreach{table =>
-  ScalasqlEntityParser.fromTable(Dialog.Postgres, table, "com.timzaak.test").writeToFile("./src/main/scala")
+model.allTables().foreach { table =>
+  if (table.name != "flyway_schema_history") {
+    ScalasqlEntityParser.fromTable(Dialect.Postgres, table, "com.timzaak.dao").writeToFile("./src/main/scala")
+  }
 }
 ```
 
