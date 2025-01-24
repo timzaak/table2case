@@ -7,9 +7,9 @@ import java.sql.ResultSet
  */
 class ResultSetIterator(rs: ResultSet) extends Iterator[WrappedResultSet] {
 
-  private[this] val cursor: ResultSetCursor = new ResultSetCursor(0)
-  private[this] var nextOpt: WrappedResultSet = null
-  private[this] var closed: Boolean = false
+  private val cursor: ResultSetCursor = new ResultSetCursor(0)
+  private var nextOpt: WrappedResultSet = null
+  private var closed: Boolean = false
 
   override def hasNext: Boolean = {
     if (nextOpt != null) {

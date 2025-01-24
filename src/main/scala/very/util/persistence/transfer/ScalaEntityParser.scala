@@ -25,9 +25,8 @@ case class ScalaEntityParser(
     s"""package ${`package`}
       |$importStr
       |case class $name(
-      |${fields
-        .map((field, typ) => s"$field: $typ,")
-        .mkString("\n")})${extendsStr}
+      |${fields.map((field, typ) => s"$field: $typ,").mkString("\n")}
+      |)${extendsStr}
       |""".stripMargin
   }
 }

@@ -1,4 +1,4 @@
-val scala3Version = "3.5.0"
+val scala3Version = "3.6.2"
 
 lazy val root = project
   .in(file("."))
@@ -8,8 +8,8 @@ lazy val root = project
     scalaVersion := scala3Version,
     libraryDependencies ++= Seq(
       // "nl.big-o" % "liqp" % "0.9.1.0",
-      "org.xerial" % "sqlite-jdbc" % "3.46.1.0" % Test,
-      "org.postgresql" % "postgresql" % "42.7.4" % Test,
-      "org.scalameta" %% "munit" % "1.0.0" % Test,
+      "org.xerial" % "sqlite-jdbc" % "3.48.0.0" % Test,
+      "org.postgresql" % "postgresql" % "42.7.5" % Test,
+      "org.scalameta" %% "munit" % "1.1.0" % Test,
     )
   )
