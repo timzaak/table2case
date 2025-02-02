@@ -11,6 +11,7 @@ case class ScalaEntityParser(
   imports: List[String],
   name: String,
   `extends`: List[String],
+  annotations: List[String],
   fields: List[(String, String)]
 ) extends WriteToFile {
 
@@ -23,7 +24,7 @@ case class ScalaEntityParser(
         s"\n${imports.map(v => s"import $v").mkString("", "\n", "\n")}"
       else ""
     s"""package ${`package`}
-      |$importStr
+      |$importStr${annotations.mkString("\n")}
       |case class $name(
       |${fields.map((field, typ) => s"$field: $typ,").mkString("\n")}
       |)${extendsStr}
@@ -162,6 +163,7 @@ object ScalaEntityParser {
     `package`: String,
     `extends`: List[String] = List.empty,
     imports: List[String] = List.empty,
+    annotations: List[String] = List.empty,
     nameF: String => String = toCamelCase.andThen(quoteReservedWord),
     columnNamePF: PartialFunction[String, String] = PartialFunction.empty,
     fieldTypePF: PartialFunction[String, String] = PartialFunction.empty,
@@ -203,6 +205,7 @@ object ScalaEntityParser {
       imports = _imports,
       name = nameF(table.name),
       `extends` = extendsFix.map(_._2),
+      annotations = annotations,
       fields = fields
     )
   }
@@ -262,9 +265,8 @@ def lowerCamelCase: String => String =
     s"${camelCase.head.toLower}${camelCase.tail}"
   }
 
-def toCamelCase: String => String = _.split("_").foldLeft("") {
-  (camelCaseString, part) =>
-    camelCaseString + toProperCase(part)
+def toCamelCase: String => String = _.split("_").foldLeft("") { (camelCaseString, part) =>
+  camelCaseString + toProperCase(part)
 }
 def toProperCase(s: String): String = {
   if (s == null || s.trim.isEmpty) ""
