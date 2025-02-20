@@ -1,5 +1,7 @@
 package very.util.persistence.transfer
 
+import org.testcontainers.containers.PostgreSQLContainer
+
 object SuiteHelper {
 
   def simpleSQL: String =
@@ -10,9 +12,9 @@ object SuiteHelper {
        |)""".stripMargin
 
   def getModel(
-                driver: String = "jdbc:sqlite::memory:",
-                sql: String = simpleSQL
-              ): Model = {
+    driver: String = "jdbc:sqlite::memory:",
+    sql: String = simpleSQL
+  ): Model = {
     val model = Model(driver)
     val stmt = model._connection.createStatement()
     stmt.execute(sql)
@@ -28,7 +30,6 @@ object SuiteHelper {
        |create_at DATE DEFAULT (datetime('now','localtime'))
        |)""".stripMargin
 
-
   def simplePGSQL: String =
     s"""create table if not exists Users(
        |id serial primary key,
@@ -36,8 +37,14 @@ object SuiteHelper {
        |info text
        |)""".stripMargin
 
+  lazy val postgres = {
+    println("Initializing Postgres")
+    val pg = new PostgreSQLContainer("postgres:15-alpine")
+    pg.start()
+    pg
+  }
   def getPGModel(sql: String = simplePGSQL): Model = {
-    val model = Model("jdbc:postgresql://127.0.0.1/test", "postgres", "postgres")
+    val model = Model(s"${postgres.getJdbcUrl}/${postgres.getDatabaseName}", postgres.getUsername, postgres.getPassword)
     val stmt = model._connection.createStatement()
     stmt.execute(sql)
     stmt.close()

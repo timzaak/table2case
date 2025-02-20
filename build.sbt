@@ -11,5 +11,6 @@ lazy val root = project
       "org.xerial" % "sqlite-jdbc" % "3.48.0.0" % Test,
       "org.postgresql" % "postgresql" % "42.7.5" % Test,
       "org.scalameta" %% "munit" % "1.1.0" % Test,
+      "org.testcontainers" % "postgresql" % "1.20.5" % Test,
     )
   )
