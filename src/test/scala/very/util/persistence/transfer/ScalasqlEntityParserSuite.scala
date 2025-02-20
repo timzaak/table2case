@@ -16,10 +16,10 @@ class ScalasqlEntityParserSuite extends FunSuite {
          |case class Users[T[_]](
          |id: T[Option[Int]],
          |username: T[String],
-         |info: T[Option[String]],)
+         |info: T[Option[String]],
+         |)
          |
-         |object Users extends Table[Users]
-         |""".stripMargin
+         |object Users extends Table[Users]""".stripMargin
     assert(schema == expected)
 
   }
