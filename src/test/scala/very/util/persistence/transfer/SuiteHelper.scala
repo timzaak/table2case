@@ -39,7 +39,7 @@ object SuiteHelper {
 
   lazy val postgres = {
     println("Initializing Postgres")
-    val pg = new PostgreSQLContainer("postgres:15-alpine")
+    val pg = new PostgreSQLContainer("postgres:15")
     pg.start()
     pg
   }
