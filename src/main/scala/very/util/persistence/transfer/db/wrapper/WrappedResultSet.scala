@@ -1,4 +1,4 @@
-package very.util.persistence.transfer.wrapper
+package very.util.persistence.transfer.db.wrapper
 
 import java.sql.ResultSet
 import scala.jdk.CollectionConverters.*
@@ -22,6 +22,10 @@ case class WrappedResultSet(
   def string(columnLabel: String): String = {
     ensureCursor()
     underlying.getString(columnLabel)
+  }
+  def boolean(columnLabel: String): Boolean = {
+    ensureCursor()
+    underlying.getBoolean(columnLabel)
   }
 
   def concurrency: Int = {

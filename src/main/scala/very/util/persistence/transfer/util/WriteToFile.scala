@@ -1,4 +1,4 @@
-package very.util.persistence.transfer
+package very.util.persistence.transfer.util
 
 import java.io.FileWriter
 import java.nio.file.Paths

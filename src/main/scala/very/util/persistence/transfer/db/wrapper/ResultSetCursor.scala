@@ -1,4 +1,4 @@
-package very.util.persistence.transfer.wrapper
+package very.util.persistence.transfer.db.wrapper
 
 /**
  * java.sql.ResultSet cursor

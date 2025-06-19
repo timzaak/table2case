@@ -1,4 +1,8 @@
-package very.util.persistence.transfer
+package very.util.persistence.transfer.scala
+
+import very.util.persistence.transfer.db.{ Dialect, JDBCTable, Table }
+import very.util.persistence.transfer.scala.{ ScalaEntityParser, quoteReservedWord, toCamelCase }
+import very.util.persistence.transfer.util.WriteToFile
 
 case class ScalasqlEntityParser(dialect: Dialect, entity: ScalaEntityParser) extends WriteToFile {
 

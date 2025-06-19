@@ -2,6 +2,8 @@ package very.util.persistence.transfer
 
 import munit.FunSuite
 import very.util.persistence.transfer.SuiteHelper.assertStringEquals
+import very.util.persistence.transfer.db.Dialect
+import very.util.persistence.transfer.scala.ScalasqlEntityParser
 
 class ScalasqlEntityParserSuite extends FunSuite {
 

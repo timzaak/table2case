@@ -2,6 +2,7 @@ package very.util.persistence.transfer
 
 import munit.FunSuite
 import very.util.persistence.transfer.SuiteHelper.assertStringEquals
+import very.util.persistence.transfer.scala.ScalaEntityParser
 
 class ScalaEntityParserSuite extends FunSuite {
 
@@ -19,19 +20,19 @@ class ScalaEntityParserSuite extends FunSuite {
     assertStringEquals(schema, expected)
   }
   test("PostgreSQL simpleEntity") {
-    val table = SuiteHelper.getPGModel().allTables().head
+    val allTable = SuiteHelper.getPGModel().allTables()
+    val table = allTable.find(_.name == "users").get
     val schema = ScalaEntityParser.fromTable(table, "com.timzaak.test").schema
-
     assertStringEquals(
       schema,
       s"""package com.timzaak.test
-                            |
-                            |case class Users(
-                            |id: Int,
-                            |username: String,
-                            |info: Option[String],
-                            |)
-                            |""".stripMargin
+        |
+        |case class Users(
+        |id: Int,
+        |username: String,
+        |info: Option[String],
+        |)
+        |""".stripMargin
     )
   }
 
@@ -69,7 +70,7 @@ class ScalaEntityParserSuite extends FunSuite {
 
   // timestamp for SQLite is string type
   test("entity with timestamp") {
-    val table = SuiteHelper.getModel(sql = SuiteHelper.simpleSQLWithTime).allTables().head
+    val table = SuiteHelper.getModel(sql = SuiteHelper.simpleSQLWithTime).allTables().find(_.name == "users").get
     val schema = ScalaEntityParser.fromTable(table, "com.timzaak.test").schema
     val expected = s"""package com.timzaak.test
                       |

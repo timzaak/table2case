@@ -7,7 +7,6 @@ lazy val root = project
     version := "0.1.0",
     scalaVersion := scala3Version,
     libraryDependencies ++= Seq(
-      // "nl.big-o" % "liqp" % "0.9.1.0",
       "org.xerial" % "sqlite-jdbc" % "3.50.1.0" % Test,
       "org.postgresql" % "postgresql" % "42.7.7" % Test,
       "org.scalameta" %% "munit" % "1.1.1" % Test,

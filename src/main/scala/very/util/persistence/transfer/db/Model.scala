@@ -1,13 +1,27 @@
-package very.util.persistence.transfer
+package very.util.persistence.transfer.db
 
-import very.util.persistence.transfer.wrapper.{ ResultSetIterator, WrappedResultSet }
+import very.util.persistence.transfer.db.Dialect.Postgres
+import very.util.persistence.transfer.db.JDBCColumn
+import very.util.persistence.transfer.db.pg.PGTableInfo
+import very.util.persistence.transfer.db.wrapper.{ ResultSetIterator, WrappedResultSet }
 
-import java.sql.{ Connection, DriverManager, JDBCType, Types }
+import java.sql.{ Connection, DriverManager, JDBCType }
 
 class Model(url: String, username: String = null, password: String = null) extends AutoCloseable {
 
   private val connection = DriverManager.getConnection(url, username, password)
 
+  lazy val dialect: Dialect = {
+    val meta = connection.getMetaData
+    val databaseProductName = meta.getDatabaseProductName
+    databaseProductName match {
+      case "MySQL"      => Dialect.MySql
+      case "PostgreSQL" => Dialect.Postgres
+      case "SQLite"     => Dialect.Sqlite
+      case "H2"         => Dialect.H2
+      case _            => Dialect.Sqlite
+    }
+  }
   private def columnName(implicit rs: WrappedResultSet): String =
     rs.string("COLUMN_NAME")
 
@@ -18,7 +32,6 @@ class Model(url: String, username: String = null, password: String = null) exten
     val isNullable = rs.string("IS_NULLABLE")
     isNullable == "NO" || isNullable == "N"
   }
-  Types.ARRAY
 
   private def isAutoIncrement(db: String, primaryKeys: List[String])(implicit
     rs: WrappedResultSet
@@ -65,13 +78,13 @@ class Model(url: String, username: String = null, password: String = null) exten
   }
 
   def allTables(schema: String = null): collection.Seq[Table] = {
-    val (db, tables) = listAllTables(schema, List("TABLE"))
-    tables.flatMap(table(db, schema, _))
-  }
-
-  def allViews(schema: String = null): collection.Seq[Table] = {
-    val (db, tables) = listAllTables(schema, List("VIEW"))
-    tables.flatMap(table(db, schema, _))
+    if (dialect == Postgres) {
+      val fixedSchema = if (schema == null) "public" else schema
+      PGTableInfo.getTableInfo(connection, fixedSchema).get
+    } else {
+      val (db, tables) = listAllTables(schema, List("TABLE"))
+      tables.flatMap(table(db, schema, _))
+    }
   }
 
   def table(
@@ -89,7 +102,7 @@ class Model(url: String, username: String = null, password: String = null) exten
 
     new ResultSetIterator(meta.getColumns(catalog, _schema, tableName, "%"))
       .map { implicit rs =>
-        Column(
+        JDBCColumn(
           columnName,
           columnDataType,
           isNotNull,
@@ -101,14 +114,11 @@ class Model(url: String, username: String = null, password: String = null) exten
       case Nil        => None
       case allColumns =>
         Some(
-          Table(
+          JDBCTable(
             schema = Option(schema),
             name = tableName,
             allColumns = allColumns,
-            autoIncrementColumns = allColumns.filter(c => c.isAutoIncrement).distinct,
-            primaryKeyColumns = primaryKeys.flatMap { name =>
-              allColumns.find(column => column.name == name)
-            }
+            primaryKeyColumns = primaryKeys
           )
         )
     }

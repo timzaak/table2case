@@ -1,4 +1,4 @@
-package very.util.persistence.transfer
+package very.util.persistence.transfer.db
 
 enum Dialect {
   case Sqlite
