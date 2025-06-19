@@ -7,10 +7,10 @@ import scala.jdk.CollectionConverters.*
  * java.sql.ResultSet wrapper.
  */
 case class WrappedResultSet(
-                             underlying: ResultSet,
-                             cursor: ResultSetCursor,
-                             index: Int
-                           ) {
+  underlying: ResultSet,
+  cursor: ResultSetCursor,
+  index: Int
+) {
   def ensureCursor(): Unit = {
     if (cursor.position != index) {
       throw new IllegalStateException(
@@ -18,8 +18,8 @@ case class WrappedResultSet(
       )
     }
   }
-  
-  def string(columnLabel:String):String = {
+
+  def string(columnLabel: String): String = {
     ensureCursor()
     underlying.getString(columnLabel)
   }
@@ -33,7 +33,5 @@ case class WrappedResultSet(
     ensureCursor()
     underlying.getCursorName
   }
-
-  
 
 }

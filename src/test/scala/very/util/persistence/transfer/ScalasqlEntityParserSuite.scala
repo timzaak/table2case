@@ -1,6 +1,7 @@
 package very.util.persistence.transfer
 
 import munit.FunSuite
+import very.util.persistence.transfer.SuiteHelper.assertStringEquals
 
 class ScalasqlEntityParserSuite extends FunSuite {
 
@@ -20,7 +21,7 @@ class ScalasqlEntityParserSuite extends FunSuite {
          |)
          |
          |object Users extends Table[Users]""".stripMargin
-    assert(schema == expected)
+    assertStringEquals(schema, expected)
 
   }
 }

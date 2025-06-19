@@ -18,6 +18,7 @@ jobs:
         with:
           jvm: temurin:21
           apps: sbt bloop sbtn
-
-      - name: Run SBT
-        run: sbt compile
+      - name: format check
+        run: sbt scalafmtCheck
+      - name: test
+        run: sbt test

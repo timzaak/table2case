@@ -1,5 +1,6 @@
 package very.util.persistence.transfer
 
+import munit.Assertions.assertEquals
 import org.testcontainers.containers.PostgreSQLContainer
 
 object SuiteHelper {
@@ -49,6 +50,11 @@ object SuiteHelper {
     stmt.execute(sql)
     stmt.close()
     model
+  }
+  
+  
+  def assertStringEquals(expected: String, actual: String): Unit = {
+    assertEquals(expected.replace("\r\n", "\n"), actual.replace("\r\n", "\n"))
   }
 
 }

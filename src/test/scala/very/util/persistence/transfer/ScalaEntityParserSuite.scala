@@ -1,6 +1,7 @@
 package very.util.persistence.transfer
 
 import munit.FunSuite
+import very.util.persistence.transfer.SuiteHelper.assertStringEquals
 
 class ScalaEntityParserSuite extends FunSuite {
 
@@ -15,14 +16,13 @@ class ScalaEntityParserSuite extends FunSuite {
                       |info: Option[String],
                       |)
                       |""".stripMargin
-    assert(schema == expected)
+    assertStringEquals(schema, expected)
   }
   test("PostgreSQL simpleEntity") {
     val table = SuiteHelper.getPGModel().allTables().head
     val schema = ScalaEntityParser.fromTable(table, "com.timzaak.test").schema
-    println(schema)
 
-    assertEquals(
+    assertStringEquals(
       schema,
       s"""package com.timzaak.test
                             |
@@ -64,7 +64,7 @@ class ScalaEntityParserSuite extends FunSuite {
          |info: Option[TestCase],
          |) extends Dao
          |""".stripMargin
-    assert(schema == expected)
+    assertStringEquals(schema, expected)
   }
 
   // timestamp for SQLite is string type
@@ -80,6 +80,6 @@ class ScalaEntityParserSuite extends FunSuite {
                       |createAt: Option[String],
                       |)
                       |""".stripMargin
-    assertEquals(schema, expected)
+    assertStringEquals(schema, expected)
   }
 }

@@ -1,14 +1,10 @@
 package very.util.persistence.transfer
 
-import very.util.persistence.transfer.wrapper.{
-  ResultSetIterator,
-  WrappedResultSet
-}
+import very.util.persistence.transfer.wrapper.{ ResultSetIterator, WrappedResultSet }
 
 import java.sql.{ Connection, DriverManager, JDBCType, Types }
 
-class Model(url: String, username: String = null, password: String = null)
-  extends AutoCloseable {
+class Model(url: String, username: String = null, password: String = null) extends AutoCloseable {
 
   private val connection = DriverManager.getConnection(url, username, password)
 
@@ -102,15 +98,14 @@ class Model(url: String, username: String = null, password: String = null)
       }
       .toList
       .distinct match {
-      case Nil => None
+      case Nil        => None
       case allColumns =>
         Some(
           Table(
             schema = Option(schema),
             name = tableName,
             allColumns = allColumns,
-            autoIncrementColumns =
-              allColumns.filter(c => c.isAutoIncrement).distinct,
+            autoIncrementColumns = allColumns.filter(c => c.isAutoIncrement).distinct,
             primaryKeyColumns = primaryKeys.flatMap { name =>
               allColumns.find(column => column.name == name)
             }
