@@ -1,0 +1,26 @@
+package very.util.persistence.transfer.postgres
+
+import munit.FunSuite
+import very.util.persistence.transfer.SuiteHelper
+import very.util.persistence.transfer.SuiteHelper.assertStringEquals // Ensure this import is present
+import very.util.persistence.transfer.scala.ScalaEntityParser
+
+class PostgresScalaEntityParserSuite extends FunSuite {
+
+  test("PostgresSQL simpleEntity") {
+    val allTable = SuiteHelper.getPGModel().allTables()
+    val table = allTable.find(_.name == "users").get
+    val schema = ScalaEntityParser.fromTable(table, "com.timzaak.test").schema
+    assertStringEquals(
+      schema,
+      s"""package com.timzaak.test
+        |
+        |case class Users(
+        |id: Int,
+        |username: String,
+        |info: Option[String],
+        |)
+        |""".stripMargin
+    )
+  }
+}

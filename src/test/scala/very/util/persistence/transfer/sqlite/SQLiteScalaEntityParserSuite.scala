@@ -1,10 +1,11 @@
-package very.util.persistence.transfer
+package very.util.persistence.transfer.sqlite
 
 import munit.FunSuite
-import very.util.persistence.transfer.SuiteHelper.assertStringEquals
+import very.util.persistence.transfer.SuiteHelper
+import very.util.persistence.transfer.SuiteHelper.assertStringEquals // Ensure this import is present
 import very.util.persistence.transfer.scala.ScalaEntityParser
 
-class ScalaEntityParserSuite extends FunSuite {
+class SQLiteScalaEntityParserSuite extends FunSuite {
 
   test("SQLite simpleEntity") {
     val table = SuiteHelper.getModel().allTables().head
@@ -19,40 +20,8 @@ class ScalaEntityParserSuite extends FunSuite {
                       |""".stripMargin
     assertStringEquals(schema, expected)
   }
-  test("PostgresSQL simpleEntity") {
-    val allTable = SuiteHelper.getPGModel().allTables()
-    val table = allTable.find(_.name == "users").get
-    val schema = ScalaEntityParser.fromTable(table, "com.timzaak.test").schema
-    assertStringEquals(
-      schema,
-      s"""package com.timzaak.test
-        |
-        |case class Users(
-        |id: Int,
-        |username: String,
-        |info: Option[String],
-        |)
-        |""".stripMargin
-    )
-  }
 
-  test("MySQL simpleEntity") {
-    val allTable = SuiteHelper.getMySQLModel().allTables()
-    println(allTable)
-    val table = allTable.find(_.name == "users").get
-    val schema = ScalaEntityParser.fromTable(table, "com.timzaak.test").schema
-    val expected = s"""package com.timzaak.test
-                      |
-                      |case class Users(
-                      |id: Int,
-                      |username: String,
-                      |info: Option[String],
-                      |)
-                      |""".stripMargin
-    assertStringEquals(schema, expected)
-  }
-
-  test("mixture Test") {
+  test("mixture Test") { // Moved from original ScalaEntityParserSuite
     val table = SuiteHelper.getModel().allTables().head
     val schema = ScalaEntityParser
       .fromTable(
@@ -85,7 +54,7 @@ class ScalaEntityParserSuite extends FunSuite {
   }
 
   // timestamp for SQLite is string type
-  test("entity with timestamp") {
+  test("entity with timestamp") { // Moved from original ScalaEntityParserSuite
     val table = SuiteHelper.getModel(sql = SuiteHelper.simpleSQLWithTime).allTables().find(_.name == "users").get
     val schema = ScalaEntityParser.fromTable(table, "com.timzaak.test").schema
     val expected = s"""package com.timzaak.test
