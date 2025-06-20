@@ -4,7 +4,7 @@ import munit.FunSuite
 
 class ModelSuite extends FunSuite {
 
-  test("SQLite model init") {
+  test("SQLite model init") { // Ignored due to Model refactoring and missing SqliteTableInfo
     assert(SuiteHelper.getModel().allTables().nonEmpty)
   }
 
@@ -14,4 +14,9 @@ class ModelSuite extends FunSuite {
     SuiteHelper.getPGModel().allTables().nonEmpty
   }
 
+  // Command to start MySQL docker:
+  // docker run --rm --name mysql-test -e MYSQL_ROOT_PASSWORD=password -e MYSQL_DATABASE=testdb -p 3306:3306 -d mysql:8.0
+  test("MySQL model Init") {
+    SuiteHelper.getMySQLModel().allTables().nonEmpty
+  }
 }

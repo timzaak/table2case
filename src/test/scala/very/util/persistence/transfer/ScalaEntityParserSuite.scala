@@ -12,14 +12,14 @@ class ScalaEntityParserSuite extends FunSuite {
     val expected = s"""package com.timzaak.test
                       |
                       |case class Users(
-                      |id: Option[Int],
+                      |id: Int,
                       |username: String,
                       |info: Option[String],
                       |)
                       |""".stripMargin
     assertStringEquals(schema, expected)
   }
-  test("PostgreSQL simpleEntity") {
+  test("PostgresSQL simpleEntity") {
     val allTable = SuiteHelper.getPGModel().allTables()
     val table = allTable.find(_.name == "users").get
     val schema = ScalaEntityParser.fromTable(table, "com.timzaak.test").schema
@@ -34,6 +34,22 @@ class ScalaEntityParserSuite extends FunSuite {
         |)
         |""".stripMargin
     )
+  }
+
+  test("MySQL simpleEntity") {
+    val allTable = SuiteHelper.getMySQLModel().allTables()
+    println(allTable)
+    val table = allTable.find(_.name == "users").get
+    val schema = ScalaEntityParser.fromTable(table, "com.timzaak.test").schema
+    val expected = s"""package com.timzaak.test
+                      |
+                      |case class Users(
+                      |id: Int,
+                      |username: String,
+                      |info: Option[String],
+                      |)
+                      |""".stripMargin
+    assertStringEquals(schema, expected)
   }
 
   test("mixture Test") {
@@ -60,7 +76,7 @@ class ScalaEntityParserSuite extends FunSuite {
          |import com.timzaak.entity.TestCase
          |
          |case class User(
-         |id: Option[Int],
+         |id: Int,
          |username: NameString,
          |info: Option[TestCase],
          |) extends Dao
@@ -75,7 +91,7 @@ class ScalaEntityParserSuite extends FunSuite {
     val expected = s"""package com.timzaak.test
                       |
                       |case class Users(
-                      |id: Option[Int],
+                      |id: Int,
                       |username: String,
                       |info: Option[String],
                       |createAt: Option[String],

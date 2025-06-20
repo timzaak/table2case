@@ -9,7 +9,7 @@ The startup code is from ScalikJDBC, this project made some changes to support o
 - [x] transfer to ScalaCaseClass
 - [x] support java.time.*
 - [x] support ScalaSQL
-- [ ] add tests for Postgres and MySQL, add GitHub Actions.
+- [x] add tests for Postgres and MySQL, add GitHub Actions.
 - [ ] reformat code by scalafmt
 
 ## Startup example

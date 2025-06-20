@@ -1,6 +1,6 @@
 package very.util.persistence.transfer.scala
 
-import very.util.persistence.transfer.db.{ JDBCTable, Table }
+import very.util.persistence.transfer.db.Table
 import very.util.persistence.transfer.util.WriteToFile
 
 import java.util.Locale
@@ -52,7 +52,7 @@ object ScalaEntityParser {
       val newName =
         if (columnNamePF.isDefinedAt(column.name)) columnNamePF(column.name)
         else columNameTransfer(column.name)
-      val scalaType = ColumnScalaType.from(column)
+      val scalaType = ColumnScalaType.from(column, table.dialect)
       val fieldType = if (fieldTypePF.isDefinedAt(newName)) {
         val importType = fieldTypePF(newName)
         val (hasImport, typeName) = extractImportsType(importType)
@@ -64,13 +64,17 @@ object ScalaEntityParser {
         }
       } else {
         if (
-          Set(TypeName.OffsetDateTime, TypeName.DateTime, TypeName.LocalTime)
+          Set(
+            TypeName.OffsetDateTime,
+            TypeName.DateTime,
+            TypeName.LocalTime,
+            TypeName.LocalDateTime
+          )
             .contains(scalaType.rawType)
         ) {
           _imports = _imports :+ s"java.time.${scalaType.rawType}"
         }
-
-        scalaType.realType(column.isNotNull)
+        scalaType.realType(column.isNotNull || column.isAutoIncrement)
       }
       newName -> fieldType
     }

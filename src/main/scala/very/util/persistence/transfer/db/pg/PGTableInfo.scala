@@ -1,7 +1,7 @@
 package very.util.persistence.transfer.db.pg
 
 import very.util.persistence.transfer.db.wrapper.ResultSetIterator
-import very.util.persistence.transfer.db.{ SQLColumn, SQLTable }
+import very.util.persistence.transfer.db.{ Dialect, SQLColumn, SQLTable }
 
 import java.sql.Connection
 import scala.util.{ Try, Using }
@@ -78,6 +78,7 @@ object PGTableInfo {
 
           SQLTable(
             tableName,
+            Dialect.Postgres,
             columns.map(_._1),
             columns.collect { case v if v._2 => v._1.name },
             schema = Some(schema)

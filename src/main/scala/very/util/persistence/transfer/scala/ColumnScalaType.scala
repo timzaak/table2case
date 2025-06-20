@@ -1,7 +1,9 @@
 package very.util.persistence.transfer.scala
 
+import very.util.persistence.transfer.db.Dialect.{ MySql, Postgres }
+import very.util.persistence.transfer.db.mysql.MySQLScalaType
 import very.util.persistence.transfer.db.pg.PGScalaType
-import very.util.persistence.transfer.db.{ Column, JDBCColumn, SQLColumn }
+import very.util.persistence.transfer.db.{ Column, Dialect, JDBCColumn, SQLColumn }
 
 import java.sql.JDBCType as JavaSqlTypes
 
@@ -12,10 +14,11 @@ trait ColumnScalaType {
 }
 
 object ColumnScalaType {
-  def from(column: Column): ColumnScalaType = {
+  def from(column: Column, dialect: Dialect): ColumnScalaType = {
     column match {
-      case jdbcColumn: JDBCColumn => JDBCScalaType(jdbcColumn.dataType)
-      case sqlColumn: SQLColumn   => PGScalaType(sqlColumn.dataType)
+      case jdbcColumn: JDBCColumn                      => JDBCScalaType(jdbcColumn.dataType)
+      case sqlColumn: SQLColumn if dialect == Postgres => PGScalaType(sqlColumn.dataType)
+      case sqlColumn: SQLColumn if dialect == MySql    => MySQLScalaType(sqlColumn.dataType)
     }
   }
 }
@@ -67,6 +70,7 @@ object JDBCScalaType {
 
 object TypeName {
   val Any = "Any"
+  val LocalDateTime = "LocalDateTime" // Added this line
   val AnyArray = "List[Any]"
   val ByteArray = "List[Byte]"
   val Long = "Long"

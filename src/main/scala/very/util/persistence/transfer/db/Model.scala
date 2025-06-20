@@ -1,7 +1,7 @@
 package very.util.persistence.transfer.db
 
-import very.util.persistence.transfer.db.Dialect.Postgres
 import very.util.persistence.transfer.db.JDBCColumn
+import very.util.persistence.transfer.db.mysql.MySQLTableInfo
 import very.util.persistence.transfer.db.pg.PGTableInfo
 import very.util.persistence.transfer.db.wrapper.{ ResultSetIterator, WrappedResultSet }
 
@@ -56,7 +56,7 @@ class Model(url: String, username: String = null, password: String = null) exten
   private def listAllTables(
     schema: String,
     types: List[String]
-  ): (String, collection.Seq[String]) = {
+  ): (String, Seq[String]) = {
 
     val meta = connection.getMetaData
     val databaseProductName = meta.getDatabaseProductName
@@ -78,17 +78,22 @@ class Model(url: String, username: String = null, password: String = null) exten
   }
 
   def allTables(schema: String = null): collection.Seq[Table] = {
-    if (dialect == Postgres) {
-      val fixedSchema = if (schema == null) "public" else schema
-      PGTableInfo.getTableInfo(connection, fixedSchema).get
-    } else {
-      val (db, tables) = listAllTables(schema, List("TABLE"))
-      tables.flatMap(table(db, schema, _))
+    dialect match {
+      case Dialect.Postgres =>
+        val fixedSchema = if (schema == null) "public" else schema
+        PGTableInfo.getTableInfo(connection, fixedSchema).get
+      case Dialect.MySql =>
+        val (_, tables) = listAllTables(schema, List("TABLE"))
+        MySQLTableInfo.getTableInfo(tables, connection, connection.getCatalog)
+      case _ =>
+        val (db, tables) = listAllTables(schema, List("TABLE"))
+        tables.flatMap(table(db, dialect, schema, _))
     }
   }
 
   def table(
     databaseProductName: String,
+    dialect: Dialect,
     schema: String = null,
     tableName: String
   ): Option[Table] = {
@@ -115,6 +120,7 @@ class Model(url: String, username: String = null, password: String = null) exten
       case allColumns =>
         Some(
           JDBCTable(
+            dialect = dialect,
             schema = Option(schema),
             name = tableName,
             allColumns = allColumns,
