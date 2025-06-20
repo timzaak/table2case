@@ -1,15 +1,15 @@
 package very.util.persistence.transfer.sqlite
 
 import munit.FunSuite
-import very.util.persistence.transfer.SuiteHelper
 import very.util.persistence.transfer.SuiteHelper.assertStringEquals
+import very.util.persistence.transfer.SQLiteHelper
 import very.util.persistence.transfer.db.Dialect
 import very.util.persistence.transfer.scala.ScalasqlEntityParser
 
 class SQLiteScalasqlEntityParserSuite extends FunSuite {
 
   test("simple Scalasql Parse") {
-    val table = SuiteHelper.getModel().allTables().head
+    val table = SQLiteHelper.getModel().allTables().head
     val schema = ScalasqlEntityParser.fromTable(Dialect.Sqlite, table, "com.timzaak.test").schema
     val expected =
       s"""package com.timzaak.test

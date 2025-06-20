@@ -1,15 +1,15 @@
 package very.util.persistence.transfer.mysql
 
 import munit.FunSuite
-import very.util.persistence.transfer.SuiteHelper // Added SuiteHelper import
-import very.util.persistence.transfer.SuiteHelper.assertStringEquals // Ensure this import is present
+import very.util.persistence.transfer.SuiteHelper.assertStringEquals
+import very.util.persistence.transfer.MySQLHelper
 import very.util.persistence.transfer.db.Dialect
 import very.util.persistence.transfer.scala.ScalasqlEntityParser
 
 class MySQLScalasqlEntityParserSuite extends FunSuite {
 
   test("MySQL Scalasql Parse") {
-    val table = SuiteHelper.getMySQLModel().allTables().find(_.name == "users").get
+    val table = MySQLHelper.getMySQLModel().allTables().find(_.name == "users").get
     val schema = ScalasqlEntityParser.fromTable(Dialect.MySql, table, "com.timzaak.test").schema
     val expected =
       s"""package com.timzaak.test
