@@ -1,5 +1,7 @@
 val scala3Version = "3.7.1"
 
+Test / parallelExecution := false
+
 lazy val root = project
   .in(file("."))
   .settings(
