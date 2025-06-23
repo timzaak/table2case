@@ -5,15 +5,18 @@ import very.util.persistence.transfer.db.Model
 
 object PostgresHelper {
 
-  def simplePGSQL: String =
+  def simplePGSQL = Seq(
+    "drop table if exists users",
     """create table if not exists users(
        |id serial primary key,
        |username text not null,
        |info text
        |)
        """.stripMargin
+  )
 
-  def fullPGTypeSQL: String =
+  def fullPGTypeSQL = Seq(
+    "drop table if exists ta",
     """create table if not exists ta(
         |id serial primary key,
         |t_tiny_int int2,
@@ -27,6 +30,7 @@ object PostgresHelper {
         |t_array_text text[]
         |)
         """.stripMargin
+  )
 
   lazy val postgres = {
     val pg = new PostgreSQLContainer("postgres:15")
@@ -34,10 +38,10 @@ object PostgresHelper {
     pg
   }
 
-  def getPGModel(sql: String = simplePGSQL): Model = {
+  def getPGModel(sql: Seq[String] = simplePGSQL): Model = {
     val model = Model(postgres.getJdbcUrl(), postgres.getUsername(), postgres.getPassword())
     val stmt = model._connection.createStatement()
-    stmt.execute(sql)
+    sql.foreach(s => stmt.execute(s))
     stmt.close()
     model
   }
