@@ -2,7 +2,6 @@ package very.util.persistence.transfer.mysql
 
 import munit.FunSuite
 import very.util.persistence.transfer.SuiteHelper.assertStringEquals
-import very.util.persistence.transfer.MySQLHelper
 import very.util.persistence.transfer.scala.ScalaEntityParser
 
 class MySQLScalaEntityParserSuite extends FunSuite {

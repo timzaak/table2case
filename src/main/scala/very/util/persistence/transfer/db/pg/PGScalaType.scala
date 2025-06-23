@@ -16,8 +16,8 @@ object PGScalaType {
     case "bigint"                       => TypeName.Long
     case "date"                         => TypeName.LocalDate
     case "bytea"                        => TypeName.ByteArray
-    case "timestamp with time zone"     => TypeName.Any
-    case "timestamp"                    => TypeName.Any
+    case "timestamp with time zone"     => TypeName.OffsetDateTime
+    case "timestamp"                    => TypeName.LocalTime
     case "boolean"                      => TypeName.Boolean
     case "jsonb" | "json"               => TypeName.Any
     case v if v.startsWith("numeric")   => TypeName.BigDecimal

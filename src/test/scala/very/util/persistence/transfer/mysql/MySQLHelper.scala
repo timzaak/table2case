@@ -1,4 +1,4 @@
-package very.util.persistence.transfer
+package very.util.persistence.transfer.mysql
 
 import org.testcontainers.containers.MySQLContainer
 import org.testcontainers.utility.DockerImageName
@@ -23,9 +23,7 @@ object MySQLHelper {
         |t_date DATE,
         |t_timestamp_tz TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- MySQL equivalent
         |t_text TEXT,
-        |t_money DECIMAL(10,2), -- MySQL equivalent
-        |t_array_int JSON, -- Workaround for array types using JSON
-        |t_array_text JSON -- Workaround for array types using JSON
+        |t_money DECIMAL(10,2) -- MySQL equivalent
         |)
         """.stripMargin
 

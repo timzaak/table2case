@@ -1,4 +1,4 @@
-package very.util.persistence.transfer
+package very.util.persistence.transfer.postgres
 
 import org.testcontainers.containers.PostgreSQLContainer
 import very.util.persistence.transfer.db.Model
@@ -18,13 +18,13 @@ object PostgresHelper {
         |id serial primary key,
         |t_tiny_int int2,
         |t_long bigint,
-        |t_bson jsonb, // Postgres specific
+        |t_bson jsonb,
         |t_date DATE ,
-        |t_timestamp_tz timestamptz default now(), // Postgres specific
+        |t_timestamp_tz timestamptz default now(),
         |t_text text,
         |t_money numeric(10,2),
-        |t_array_int integer[], // Postgres specific
-        |t_array_text text[] // Postgres specific
+        |t_array_int integer[],
+        |t_array_text text[]
         |)
         """.stripMargin
 

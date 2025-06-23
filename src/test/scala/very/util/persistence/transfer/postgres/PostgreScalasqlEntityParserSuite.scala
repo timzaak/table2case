@@ -1,20 +1,20 @@
-package very.util.persistence.transfer.sqlite
+package very.util.persistence.transfer.postgres
 
 import munit.FunSuite
 import very.util.persistence.transfer.SuiteHelper.assertStringEquals
 import very.util.persistence.transfer.db.Dialect
 import very.util.persistence.transfer.scala.ScalasqlEntityParser
 
-class SQLiteScalasqlEntityParserSuite extends FunSuite {
+class PostgreScalasqlEntityParserSuite extends FunSuite {
 
-  test("simple Scalasql Parse") {
-    val table = SQLiteHelper.getModel().allTables().head
-    val schema = ScalasqlEntityParser.fromTable(Dialect.Sqlite, table, "com.timzaak.test").schema
+  test("Postgres scalasql Parse") {
+    val table = PostgresHelper.getPGModel().allTables().find(_.name == "users").get
+    val schema = ScalasqlEntityParser.fromTable(Dialect.Postgres, table, "com.timzaak.test").schema
     val expected =
       s"""package com.timzaak.test
          |
          |import scalasql.*
-         |import scalasql.SqliteDialect.*
+         |import scalasql.PostgresDialect.*
          |
          |case class Users[T[_]](
          |id: T[Int],
@@ -25,4 +25,5 @@ class SQLiteScalasqlEntityParserSuite extends FunSuite {
          |object Users extends Table[Users]""".stripMargin
     assertStringEquals(schema, expected)
   }
+
 }

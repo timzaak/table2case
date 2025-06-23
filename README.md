@@ -14,16 +14,55 @@ The startup code is from ScalikJDBC, this project made some changes to support o
 
 ## Startup example
 
+create table sql:
+
+```postgresql
+create table if not exists ta
+(
+    id             serial primary key,
+    t_tiny_int     int2,
+    t_long         bigint,
+    t_bson         jsonb,
+    t_date         DATE,
+    t_timestamp_tz timestamptz default now(),
+    t_text         text,
+    t_money        numeric(10, 2),
+    t_array_int    integer[],
+    t_array_text   text[]
+);
+```
+
 ```scala
 import very.util.persistence.transfer.db.Model
-import very.util.persistence.transfer.scala.ScalasqlEntityParser
+import very.util.persistence.transfer.scala.ScalaEntityParser
 
 val model = Model("jdbc:postgresql://127.0.0.1/test", "postgres", "postgres")
 model.allTables().foreach { table =>
   if (table.name != "flyway_schema_history") {
-    ScalasqlEntityParser.fromTable(Dialect.PostgreSQL, table, "com.timzaak.dao").writeToFile("./src/main/scala")
+    ScalaEntityParser.fromTable(Dialect.PostgreSQL, table, "com.timzaak.dao").writeToFile("./src/main/scala")
   }
 }
+/*
+would output:
+
+package com.timzaak.test
+import java.time.OffsetDateTime
+                      
+case class Ta(
+id: Int,
+tTinyInt: Option[Short],
+tLong: Option[Long],
+tBson: Option[Any],
+tDate: Option[LocalDate],
+tTimestampTz: Option[OffsetDateTime],
+tText: Option[String],
+tMoney: Option[BigDecimal],
+tArrayInt: Option[List[Int]],
+tArrayText: Option[List[String]],
+)
+                      
+ */
+
 ```
 
 ## Known Issue

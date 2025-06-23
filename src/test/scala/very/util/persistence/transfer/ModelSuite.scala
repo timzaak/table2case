@@ -1,9 +1,9 @@
 package very.util.persistence.transfer
 
 import munit.FunSuite
-import very.util.persistence.transfer.SQLiteHelper
-import very.util.persistence.transfer.PostgresHelper
-import very.util.persistence.transfer.MySQLHelper
+import very.util.persistence.transfer.mysql.MySQLHelper
+import very.util.persistence.transfer.postgres.PostgresHelper
+import very.util.persistence.transfer.sqlite.SQLiteHelper
 
 class ModelSuite extends FunSuite {
 
@@ -12,10 +12,10 @@ class ModelSuite extends FunSuite {
   }
 
   test("PostgresSQL model Init".ignore) {
-    PostgresHelper.getPGModel().allTables().nonEmpty
+    assert(PostgresHelper.getPGModel().allTables().nonEmpty)
   }
 
   test("MySQL model Init") {
-    MySQLHelper.getMySQLModel().allTables().nonEmpty
+    assert(MySQLHelper.getMySQLModel().allTables().nonEmpty)
   }
 }

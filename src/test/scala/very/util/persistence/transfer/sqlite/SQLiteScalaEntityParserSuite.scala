@@ -2,7 +2,6 @@ package very.util.persistence.transfer.sqlite
 
 import munit.FunSuite
 import very.util.persistence.transfer.SuiteHelper.assertStringEquals
-import very.util.persistence.transfer.SQLiteHelper
 import very.util.persistence.transfer.scala.ScalaEntityParser
 
 class SQLiteScalaEntityParserSuite extends FunSuite {
