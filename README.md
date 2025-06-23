@@ -68,4 +68,3 @@ tArrayText: Option[List[String]],
 ## Known Issue
 
 - SQLite `timestamp` jdbc type would be `VARCHAR`.
-- SQLite `primary key` would be nullable.
