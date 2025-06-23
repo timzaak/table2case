@@ -29,7 +29,7 @@ class PostgresScalaEntityParserSuite extends FunSuite {
     val schema = ScalaEntityParser.fromTable(table, "com.timzaak.test").schema
     val expected = s"""package com.timzaak.test
                       |
-                      |import java.time.OffsetDateTime 
+                      |import java.time.OffsetDateTime
                       |
                       |case class Ta(
                       |id: Int,
