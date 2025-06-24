@@ -6,7 +6,7 @@ lazy val root = project
   .in(file("."))
   .settings(
     name := "table2case",
-    version := "0.0.1",
+    version := "0.0.2",
     scalaVersion := scala3Version,
     libraryDependencies ++= Seq(
       "org.xerial" % "sqlite-jdbc" % "3.50.1.0" % Test,
