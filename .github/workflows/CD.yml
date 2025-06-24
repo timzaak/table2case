@@ -1,0 +1,39 @@
+name: Publish to Maven Central
+
+on:
+  push:
+    tags:
+      - 'v*'  # 例如 v1.0.0
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 11
+          gpg-private-key: ${{ secrets.PGP_PRIVATE_KEY }}
+          gpg-passphrase: ${{ secrets.PGP_PASSPHRASE }}
+          server-id: ossrh
+          server-username: ${{ secrets.SONATYPE_USERNAME }}
+          server-password: ${{ secrets.SONATYPE_PASSWORD }}
+
+      - name: Import GPG key
+        run: |
+          echo "${{ secrets.PGP_PRIVATE_KEY }}" | gpg --batch --yes --import
+          echo "use-agent" >> ~/.gnupg/gpg.conf
+          echo "pinentry-mode loopback" >> ~/.gnupg/gpg.conf
+          echo "allow-loopback-pinentry" >> ~/.gnupg/gpg-agent.conf
+          echo RELOADAGENT | gpg-connect-agent
+          gpg --list-keys
+
+      - name: Publish artifacts
+        run: |
+          sbt clean +publishSigned
+          sbt sonatypeBundleRelease

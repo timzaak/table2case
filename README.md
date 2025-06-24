@@ -1,5 +1,7 @@
 ## TableToCaseClass
 
+[![Maven Central](https://img.shields.io/maven-central/v/com.timzaak/table2case_3.svg?label=Maven%20Central)](https://search.maven.org/artifact/com.timzaak/table2case_3)
+
 This is used to create case class code from Database info, it would support SQLite, Postgres and MySQL.
 
 It's in early development, all things may change.
