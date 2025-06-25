@@ -25,5 +25,6 @@ jobs:
           PGP_SECRET: ${{ secrets.PGP_PRIVATE_KEY }}
           SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
           SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
-        run: |
-          sbt +publishSigned +sonatypeBundleDirectory +sonatypeCentralRelease
+        run: sbt ci-release
+#        run: |
+#          sbt +publishSigned +sonatypeBundleDirectory +sonatypeCentralRelease
