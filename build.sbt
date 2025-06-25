@@ -17,10 +17,7 @@ lazy val root = project
       "org.testcontainers" % "mysql" % "1.21.2" % Test,
       "org.slf4j" % "slf4j-simple" % "2.0.17" % Test,
     ),
-    // Publishing settings
     organization := "com.fornetcode",
-    publishMavenStyle := true,
-    sonatypeProfileName := "com.fornetcode",
     licenses := Seq("Apache-2.0" -> url("https://www.apache.org/licenses/LICENSE-2.0")),
     homepage := Some(url("https://github.com/timzaak/table2case")),
     scmInfo := Some(
@@ -36,6 +33,8 @@ lazy val root = project
         email = "zsy.evan@gmail.com",
         url = url("https://github.com/timzaak")
       )
-    ),
-    publishTo := sonatypePublishToBundle.value
+    )
   )
+
+ThisBuild / sonatypeCredentialHost := "s01.oss.sonatype.org"
+sonatypeRepository := "https://s01.oss.sonatype.org/service/local"

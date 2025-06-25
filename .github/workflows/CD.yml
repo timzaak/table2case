@@ -1,9 +1,10 @@
 name: Publish to Maven Central
 
 on:
-  push:
-    tags:
-      - 'v*'  # 例如 v1.0.0
+  workflow_dispatch:
+#  push:
+#    tags:
+#      - 'v*'
 
 jobs:
   publish:
@@ -17,20 +18,12 @@ jobs:
         with:
           jvm: temurin:17
           apps: sbt bloop sbtn
-      - name: format check
-        run: sbt scalafmtCheck
-      - name: test
-        run: sbt test
-      - name: Import GPG key
-        run: |
-          echo "${{ secrets.PGP_PRIVATE_KEY }}" | gpg --batch --yes --import
-          echo "use-agent" >> ~/.gnupg/gpg.conf
-          echo "pinentry-mode loopback" >> ~/.gnupg/gpg.conf
-          echo "allow-loopback-pinentry" >> ~/.gnupg/gpg-agent.conf
-          echo RELOADAGENT | gpg-connect-agent
-          gpg --list-keys
 
       - name: Publish artifacts
+        env:
+          PGP_PASSPHRASE: ${{ secrets.PGP_PASSPHRASE }}
+          PGP_SECRET: ${{ secrets.PGP_PRIVATE_KEY }}
+          SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
+          SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
         run: |
-          sbt clean +publishSigned
-          sbt sonatypeBundleRelease
+          sbt ci-release

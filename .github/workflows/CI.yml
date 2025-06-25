@@ -1,7 +1,7 @@
 name: CI
 
 on:
-  push: 
+  push:
     branches: main
 
 jobs:
@@ -16,7 +16,7 @@ jobs:
       - uses: coursier/cache-action@v6
       - uses: coursier/setup-action@v1
         with:
-          jvm: temurin:21
+          jvm: temurin:17
           apps: sbt bloop sbtn
       - name: format check
         run: sbt scalafmtCheck
