@@ -1,6 +1,6 @@
 ## TableToCaseClass
 
-[![Maven Central](https://img.shields.io/maven-central/v/com.timzaak/table2case_3.svg?label=Maven%20Central)](https://search.maven.org/artifact/com.timzaak/table2case_3)
+[![Maven Central](https://img.shields.io/maven-central/v/com.fornetcode/table2case_3.svg?label=Maven%20Central)](https://search.maven.org/artifact/com.fornetcode/table2case_3)
 
 This is used to create case class code from Database info, it would support SQLite, Postgres and MySQL.
 
@@ -32,6 +32,10 @@ create table if not exists ta
     t_array_int    integer[],
     t_array_text   text[]
 );
+```
+
+```scala
+libraryDependencies += "com.fornetcode" % "table2case_3" % "$VERSION"
 ```
 
 ```scala
