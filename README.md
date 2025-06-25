@@ -70,3 +70,10 @@ tArrayText: Option[List[String]],
 ## Known Issue
 
 - SQLite `timestamp` jdbc type would be `VARCHAR`.
+
+## self bundle jar
+
+```shell
+sbt publishSigned sonatypeBundleDirectory
+# cd \sonatype-staging\$version , zip the directory and upload to sonatype via https://central.sonatype.com/publishing
+```
