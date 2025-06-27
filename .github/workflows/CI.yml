@@ -19,6 +19,6 @@ jobs:
           jvm: temurin:17
           apps: sbt bloop sbtn
       - name: format check
-        run: sbt scalafmtCheck
+        run: sbt scalafmtCheckAll
       - name: test
         run: sbt test
