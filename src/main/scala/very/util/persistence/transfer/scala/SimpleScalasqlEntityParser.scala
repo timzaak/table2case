@@ -31,7 +31,7 @@ object SimpleScalasqlEntityParser {
     nameF: String => String = toCamelCase.andThen(quoteReservedWord),
     columnNamePF: PartialFunction[String, String] = PartialFunction.empty,
     fieldTypePF: PartialFunction[String, String] = PartialFunction.empty,
-  ): ScalasqlEntityParser = {
+  ): SimpleScalasqlEntityParser = {
     val entity = ScalaEntityParser.fromTable(
       table,
       `package`,
@@ -42,6 +42,6 @@ object SimpleScalasqlEntityParser {
       columnNamePF,
       fieldTypePF
     )
-    ScalasqlEntityParser(dialect, entity)
+    SimpleScalasqlEntityParser(dialect, entity)
   }
 }
