@@ -4,7 +4,7 @@ import very.util.persistence.transfer.db.{ Dialect, Table }
 import very.util.persistence.transfer.scala.{ ScalaEntityParser, quoteReservedWord, toCamelCase }
 import very.util.persistence.transfer.util.WriteToFile
 
-case class ScalasqlEntityParser(dialect: Dialect, entity: ScalaEntityParser) extends WriteToFile {
+class SimpleScalasqlEntityParser(dialect: Dialect, entity: ScalaEntityParser) extends WriteToFile {
 
   override def `package`: String = entity.`package`
 
@@ -12,17 +12,15 @@ case class ScalasqlEntityParser(dialect: Dialect, entity: ScalaEntityParser) ext
 
   def schema: String = {
     val fixedName = entity.copy(
-      name = s"${entity.name}[T[_]]",
-      imports = List("scalasql.*", s"scalasql.${dialect}Dialect.*") ::: entity.imports,
-      fields = entity.fields.map((k, t) => (k, s"T[$t]")),
+      imports = List("scalasql.simple.*", s"scalasql.${dialect}Dialect.*") ::: entity.imports,
     )
     s"""${fixedName.schema}
-       |object ${entity.name} extends Table[${entity.name}]""".stripMargin
+       |object ${entity.name} extends SimpleTable[${entity.name}]""".stripMargin
   }
 
 }
 
-object ScalasqlEntityParser {
+object SimpleScalasqlEntityParser {
   def fromTable(
     dialect: Dialect,
     table: Table,
