@@ -2,16 +2,15 @@
 
 [![Maven Central](https://img.shields.io/maven-central/v/com.fornetcode/table2case_3.svg?label=Maven%20Central)](https://search.maven.org/artifact/com.fornetcode/table2case_3)
 
-This is used to create case class code from Database info, it would support SQLite, Postgres and MySQL.
+This is used to create case class code from database table info, it would support SQLite, Postgres and MySQL.
 
 The startup code is from ScalikJDBC, this project made some changes to support another ORM project.
 
-Now it only supports Scala 3, java17 +.
+It only supports Scala 3, java17 +, if you want to use it with Scala 2, or lower JVM version, please open an issue
+letting me know.
 
-- [x] transfer to ScalaCaseClass
-- [x] support java.time.*
-- [x] support ScalaSQL
-- [x] add tests for Postgres and MySQL, add GitHub Actions.
+- support scala case class.
+- support scalasql.
 
 ## Startup example
 
